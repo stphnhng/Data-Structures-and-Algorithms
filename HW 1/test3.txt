@@ -1,0 +1,5 @@
+enqueue Hello
+dequeue Hello
+dequeue #
+enqueue World
+dequeue World

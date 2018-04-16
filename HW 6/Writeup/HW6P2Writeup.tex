@@ -1,0 +1,575 @@
+\documentclass[12pt]{exam}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor,colortbl}
+\newcommand{\ppp}{\par \noindent}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\PS}{\mathcal{P}}
+\pagestyle{empty} 
+
+\newcolumntype{a}{>{\columncolor{yellow}}r}
+
+\begin{document}
+
+\centerline{\textbf{CSE 373 HW6 P2 Writeup}}
+\centerline{Stephen Hung}
+
+\begin{questions}
+
+\question Using Quick Sort, with the median pivot rule (pick the median of: data[lo], data[hi - 1], and data[(hi + lo) / 2]), sort the following list of numbers. Show your work by drawing the tree of partitions and pivots (as seen in the lecture slides) with the partition rules discussed in lecture (swapping the pivot to index lo and doing swaps to complete the partitions). Apply a cutoff of 3 elements and sort with any sorting method. \medskip
+
+\centerline{data = 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+5 & 7 & 9 & 1 & 3 & 4 & 6 & 8 & 2 \\
+\hline
+\end{tabular}}
+
+The three values to choose the pivot median from are:
+\begin{itemize}
+\item data[lo] = data[$0$] = $5$
+\item data[(hi+lo)/2] = data[$4$] = $3$
+\item data[hi-1] = data[$9-1$] = $2$
+\item The median pivot is therefore the value at data[$4$] which is 3
+\end{itemize}
+
+First swap the pivot with index 0
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 7 & 9 & 1 & 5 & 4 & 6 & 8 & 2 \\
+$\uparrow$ & $\uparrow$ & & & & & & & $\uparrow$ \\
+pivot & left pointer & & & & & & & right pointer \\
+\hline
+\end{tabular}
+}
+
+Left Pointer: $7>3$ so stop pointer
+
+Right Pointer: $2<3$ so stop pointer
+
+Since both left and right are stopped, swap the two pointers and then move the left and right pointer forward/backward.
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 2 & 9 & 1 & 5 & 4 & 6 & 8 & 7 \\
+$\uparrow$ & & $\uparrow$ & & & & & $\uparrow$ &  \\
+pivot & & left pointer & & & & & right pointer &  \\
+\hline
+\end{tabular}
+}
+
+Left Pointer: $9>3$ so stop pointer
+
+Right Pointer: $8>3$ so keep moving pointer.
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 2 & 9 & 1 & 5 & 4 & 6 & 8 & 7 \\
+$\uparrow$ & & $\uparrow$ & & & & $\uparrow$ & &  \\
+pivot & & left pointer & & & & right pointer & &  \\
+\hline
+\end{tabular}
+}
+
+Left Pointer: Still stopped at $9$.
+
+Right Pointer: $6>3$ so keep moving pointer.
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 2 & 9 & 1 & 5 & 4 & 6 & 8 & 7 \\
+$\uparrow$ & & $\uparrow$ & & & $\uparrow$ & & &  \\
+pivot & & left pointer & & & right pointer & & &  \\
+\hline
+\end{tabular}
+}
+
+Left Pointer: Still stopped at $9$.
+
+Right Pointer: $4>3$ so keep moving pointer.
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 2 & 9 & 1 & 5 & 4 & 6 & 8 & 7 \\
+$\uparrow$ & & $\uparrow$ & & $\uparrow$ & & & &  \\
+pivot & & left pointer & & right pointer & & & &  \\
+\hline
+\end{tabular}
+}
+
+Left Pointer: Still stopped at $9$.
+
+Right Pointer: $5>3$ so keep moving pointer.
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 2 & 9 & 1 & 5 & 4 & 6 & 8 & 7 \\
+$\uparrow$ & & $\uparrow$ & $\uparrow$ & & & & &  \\
+pivot & & left pointer & right pointer & & & & &  \\
+\hline
+\end{tabular}
+}
+
+Left Pointer: Still stopped at $9$.
+
+Right Pointer: $1<3$ so stop pointer.
+
+Since both pointers are stopped, swap the pointers and then move right pointer first.
+
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+3 & 2 & 1 & 9 & 5 & 4 & 6 & 8 & 7 \\
+$\uparrow$ & & $\uparrow$ & & & & & &  \\
+pivot & & left pointer and right pointer & & & & & &  \\
+\hline
+\end{tabular}
+}
+
+Since the pointers are pointing at the same index, stop the sort and swap with pivot.
+
+\centerline{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+1 & 2 & 3 & 9 & 5 & 4 & 6 & 8 & 7 \\
+& & $\uparrow$ & & & & & &  \\
+& & pivot & & & & & &  \\
+\hline
+\end{tabular}
+}
+
+Partition the array.
+
+\centerline{
+	\begin{tabular}{|c|c|}
+	\hline
+		1 & 2\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		3\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline
+		9 & 5 & 4 & 6 & 8 & 7\\
+	\hline
+	\end{tabular}
+}
+
+The left array 
+\begin{tabular}{|c|c|}
+	\hline
+		1 & 2\\
+	\hline
+\end{tabular}
+is below 3 elements and is thus sorted. Since it is already sorted it stays in the same order.
+
+The right arrow is above 3 elements and thus goes through another round of quick sort. The three values to choose the pivot median from are 
+\begin{itemize}
+\item data[lo] = data[$0$] = $9$
+\item data[(hi+lo)/2] = data[$3$] = $6$
+\item data[hi-1] = data[$6-1$] = $7$
+\end{itemize}
+
+Thus the median pivot is data[$5$] = $7$. Swap the element at index 0 with the pivot.
+
+\centerline{
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+			7 & 5 & 4 & 6 & 8 & 9\\
+			$\uparrow$ & $\uparrow$& & & & $\uparrow$\\
+			pivot & left pointer & & & & right pointer \\
+		\hline
+	\end{tabular}
+}
+
+Left Pointer: $5 < 7$, keep the pointer moving.
+
+Right Pointer: $9 > 7$, keep the pointer moving.
+
+\centerline{
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+			7 & 5 & 4 & 6 & 8 & 9\\
+			$\uparrow$ & & $\uparrow$& & $\uparrow$ & \\
+			pivot & & left pointer & & right pointer &  \\
+		\hline
+	\end{tabular}
+}
+
+Left Pointer: $4<7$, keep the pointer moving.
+
+Right Pointer: $8>7$, keep the pointer moving.
+
+\centerline{
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+			7 & 5 & 4 & 6 & 8 & 9\\
+			$\uparrow$ & & & $\uparrow$& & \\
+			pivot & & & left and right pointer& &  \\
+		\hline
+	\end{tabular}
+}
+
+Since the pointers are pointing at the same index, stop the sort and swap with pivot.
+
+\centerline{
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+			6 & 5 & 4 & 7 & 8 & 9\\
+			& & & $\uparrow$ & & \\
+			& & & pivot & &  \\
+		\hline
+	\end{tabular}
+}
+
+
+Partition the array.
+
+\centerline{
+	\begin{tabular}{|c|c|c|}
+	\hline
+		6 & 5 & 4\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		7\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|}
+	\hline
+		8 & 9\\
+	\hline
+	\end{tabular}
+}
+
+Since all partitions are $\leq 3$ elements, sort all partitions.
+
+\centerline{
+	\begin{tabular}{|c|c|c|}
+	\hline
+		6 & 5 & 4\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		7\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|}
+	\hline
+		8 & 9\\
+	\hline
+	\end{tabular}
+}
+
+\centerline{$\downarrow$}
+
+\centerline{
+	\begin{tabular}{|c|c|c|}
+	\hline
+		4 & 5 & 6\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		7\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|}
+	\hline
+		8 & 9\\
+	\hline
+	\end{tabular}
+}
+
+Combine the partitions 
+
+\centerline{
+	\begin{tabular}{|c|c|c|}
+	\hline
+		4 & 5 & 6\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		7\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|}
+	\hline
+		8 & 9\\
+	\hline
+	\end{tabular}
+}
+\centerline{$\downarrow$}
+\centerline{
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline
+		4 & 5 & 6 & 7 & 8 & 9\\
+	\hline
+	\end{tabular}
+}
+
+The partition from the first quick sort now looks like this:
+
+\centerline{
+	\begin{tabular}{|c|c|}
+	\hline
+		1 & 2\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		3\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline
+		4 & 5 & 6 & 7 & 8 & 9\\
+	\hline
+	\end{tabular}
+}
+
+Combine these partitions
+
+\centerline{
+	\begin{tabular}{|c|c|}
+	\hline
+		1 & 2\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|}
+	\hline
+		3\\
+	\hline
+	\end{tabular}
+	\begin{tabular}{|c|c|c|c|c|c|}
+	\hline
+		4 & 5 & 6 & 7 & 8 & 9\\
+	\hline
+	\end{tabular}
+}
+\centerline{$\downarrow$}
+\centerline{
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+	\hline
+		1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9\\
+	\hline
+	\end{tabular}
+}
+
+Since this is the last partition, the quick sort is complete.
+
+\question Using Radix Sort with a radix of 6 (letters: a, b, c, d, e, f) to alphabetically sort the following strings, draw contents of each bucket at the end of each radix 'digit' iteration pass.
+
+\centerline{Strings = 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+abc & da & ffff & defcd & abebd & ca & b & fef & dfe\\
+\hline
+\end{tabular}
+}
+
+For strings that have a length less than 5, a 0 can be added to their beginning to make up for the lost length.
+
+Yellow indicates the column that is sorted at that step.
+
+\begin{tabular} {|r r r r r|}
+\hline
+&&a&b&c\\
+\hline
+&&&d&a\\
+\hline
+&f&f&f&f\\
+\hline
+d&e&f&c&d\\
+\hline
+a&b&e&b&d\\
+\hline
+&&&c&a\\
+\hline
+&&&&b\\
+\hline
+&&f&e&f\\
+\hline
+&&d&f&e\\
+\hline
+\end{tabular}
+$\rightarrow$
+Add 0's to make up for lost length
+$\rightarrow$
+\begin{tabular} {|r r r r r|}
+\hline
+0&0&a&b&c\\
+\hline
+0&0&0&d&a\\
+\hline
+0&f&f&f&f\\
+\hline
+d&e&f&c&d\\
+\hline
+a&b&e&b&d\\
+\hline
+0&0&0&c&a\\
+\hline
+0&0&0&0&b\\
+\hline
+0&0&f&e&f\\
+\hline
+0&0&d&f&e\\
+\hline
+\end{tabular}
+$\rightarrow$
+
+\begin{tabular} {|r r r r a|}
+\hline
+0&0&0&d&a\\
+\hline
+0&0&0&c&a\\
+\hline
+0&0&0&0&b\\
+\hline
+0&0&a&b&c\\
+\hline
+d&e&f&c&d\\
+\hline
+a&b&e&b&d\\
+\hline
+0&0&d&f&e\\
+\hline
+0&f&f&f&f\\
+\hline
+0&0&f&e&f\\
+\hline
+\end{tabular}
+$\rightarrow$
+\begin{tabular} {|r r r a r|}
+\hline
+0&0&0&0&b\\
+\hline
+0&0&a&b&c\\
+\hline
+a&b&e&b&d\\
+\hline
+0&0&0&c&a\\
+\hline
+d&e&f&c&d\\
+\hline
+0&0&0&d&a\\
+\hline
+0&0&f&e&f\\
+\hline
+0&0&d&f&e\\
+\hline
+0&f&f&f&f\\
+\hline
+\end{tabular}
+$\rightarrow$
+\begin{tabular} {|r r a r r|}
+\hline
+0&0&0&0&b\\
+\hline
+0&0&0&c&a\\
+\hline
+0&0&0&d&a\\
+\hline
+0&0&a&b&c\\
+\hline
+0&0&d&f&e\\
+\hline
+a&b&e&b&d\\
+\hline
+d&e&f&c&d\\
+\hline
+0&0&f&e&f\\
+\hline
+0&f&f&f&f\\
+\hline
+\end{tabular}
+$\rightarrow$
+\begin{tabular} {|r a r r r|}
+\hline
+0&0&0&0&b\\
+\hline
+0&0&0&c&a\\
+\hline
+0&0&0&d&a\\
+\hline
+0&0&a&b&c\\
+\hline
+0&0&d&f&e\\
+\hline
+0&0&f&e&f\\
+\hline
+a&b&e&b&d\\
+\hline
+d&e&f&c&d\\
+\hline
+0&f&f&f&f\\
+\hline
+\end{tabular}
+$\rightarrow$
+
+\begin{tabular} {|a r r r r|}
+\hline
+0&0&0&0&b\\
+\hline
+0&0&0&c&a\\
+\hline
+0&0&0&d&a\\
+\hline
+0&0&a&b&c\\
+\hline
+0&0&d&f&e\\
+\hline
+0&0&f&e&f\\
+\hline
+0&f&f&f&f\\
+\hline
+a&b&e&b&d\\
+\hline
+d&e&f&c&d\\
+\hline
+\end{tabular}
+$\rightarrow$ Remove all the added a's $\rightarrow$
+\begin{tabular} {|r r r r r|}
+\hline
+&&&&b\\
+\hline
+&&&c&a\\
+\hline
+&&&d&a\\
+\hline
+&&a&b&c\\
+\hline
+&&d&f&e\\
+\hline
+&&f&e&f\\
+\hline
+&f&f&f&f\\
+\hline
+a&b&e&b&d\\
+\hline
+d&e&f&c&d\\
+\hline
+\end{tabular}
+
+
+\end{questions}
+\end{document}

@@ -1,0 +1,5 @@
+enqueue 1
+dequeue 1
+dequeue #
+enqueue 2
+dequeue 2
